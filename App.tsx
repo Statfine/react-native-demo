@@ -6,112 +6,144 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {View, Text, Button, Alert, StyleSheet} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import HomeScreen from './app/pages/home';
+import AiScreen from './app/pages/ai';
+import MineScreen from './app/pages/mine';
+import CreateScreen from './app/pages/create';
+import HistoryScreen from './app/pages/history';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const tabBarLabel = {
+  Square: '广场',
+  Ai: 'Ai创作',
+  Mine: '我的',
+};
+
+function Home() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
+    <Tab.Navigator
+      screenOptions={({route}: any) => ({
+        // tabBarIcon: ({focused, color, size}) => {
+        //   console.log({focused, color, size});
+        //   return <Text style={{color: 'red'}}>1</Text>;
+        // },
+        tabBarLabel: ({focused, color}) => {
+          console.log({focused, color});
+          const name = tabBarLabel[route.name as 'Square'];
+          return (
+            <Text style={{color: focused ? '#CB79DC' : '#DFD7F1'}}>{name}</Text>
+          );
+        },
+        tabBarActiveTintColor: '#CB79DC',
+        tabBarInactiveTintColor: '#DFD7F1',
+        tabBarBackground: () => <View style={styles.tabBarBackground} />,
+      })}>
+      <Tab.Screen
+        name="Square"
+        component={HomeScreen}
+        options={{
+          title: '创作推荐',
+          headerStyle: {
+            backgroundColor: '#1f0d32',
           },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
           },
-        ]}>
-        {children}
-      </Text>
-    </View>
+          headerRight: () => (
+            <Button
+              onPress={() => Alert.alert('This is a button!')}
+              title="Info"
+              color="#fff"
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Ai"
+        component={AiScreen}
+        options={{
+          title: 'AI创作',
+          headerStyle: {
+            backgroundColor: '#1f0d32',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Mine"
+        component={MineScreen}
+        options={{
+          title: '我的',
+          headerStyle: {
+            backgroundColor: '#1f0d32',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx 123456</Text> to change
-            this screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Create"
+          component={CreateScreen}
+          options={{
+            title: '我的绘画',
+            headerStyle: {
+              backgroundColor: '#1f0d32',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="History"
+          component={HistoryScreen}
+          options={{
+            title: '我的绘画',
+            headerStyle: {
+              backgroundColor: '#1f0d32',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  tabBarBackground: {
+    flex: 1,
+    backgroundColor: '#1f0d32',
   },
 });
 

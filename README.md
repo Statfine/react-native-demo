@@ -80,9 +80,18 @@ To learn more about React Native, take a look at the following resources:
 
 
 ## Start
-- npm i
-- cd ios
-- bundle install  安装捆绑器
-- bundle exec pod install 安装 CocoaPods 管理的 iOS 依赖项。
-- cd ../
-- npm run ios
+
+```bash
+# using npm
+npm i
+
+# install the pods
+npx pod-install ios
+
+# OR
+cd ios && pod install
+
+#  For iOS
+npm run ios
+
+```
